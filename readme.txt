@@ -15,6 +15,7 @@
 ##################################################################
 ##################################################################
 
+Please note that the plugin is compatible with v1 and v3 MailJet users. 
 
 1) Unzip plugin/Mailjet-Magento.zip.
 2) Upload all its content in your Magento's root directory.
