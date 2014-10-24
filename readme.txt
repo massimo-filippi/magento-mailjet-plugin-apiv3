@@ -15,6 +15,8 @@
 ##################################################################
 ##################################################################
 
+This Plug-in replaces your default Magento SMTP by Mailjet's SMTP relay for advancec Deliverability and Statistics
+
 Please note that the plugin is compatible with v1 and v3 MailJet users. 
 
 1) Unzip plugin/Mailjet-Magento.zip.
