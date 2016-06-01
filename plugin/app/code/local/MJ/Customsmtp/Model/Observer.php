@@ -28,8 +28,8 @@ class MJ_Customsmtp_Model_Observer
                 break;
             }
         }
-
-        if (self::$fields ['test'] && 4 == count (self::$fields))
+        
+        if (array_key_exists('test', self::$fields) && 4 == count (self::$fields))
         {
             $configs = array (
                 array ('ssl://', 465),
