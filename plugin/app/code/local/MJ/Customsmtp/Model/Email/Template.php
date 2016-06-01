@@ -66,7 +66,14 @@ class MJ_Customsmtp_Model_Email_Template extends Mage_Core_Model_Email_Template 
         }
 
         else {
-            $mail->addTo($Mail->getToEmail(), '=?utf-8?B?' . base64_encode($Mail->getToName()) . '?=');
+        	
+        	$toName = $Mail->getToName();
+			
+			if (is_array($toName)) {
+				$toName = $toName[0];
+			}
+			
+            $mail->addTo($Mail->getToEmail(), '=?utf-8?B?' . base64_encode($toName) . '?=');
         }
 
         $mail->setFrom($Mail->getFromEmail(), $Mail->getFromName());
