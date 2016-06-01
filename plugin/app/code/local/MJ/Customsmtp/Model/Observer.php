@@ -28,15 +28,18 @@ class MJ_Customsmtp_Model_Observer
                 break;
             }
         }
-
-        if (self::$fields ['test'] && 4 == count (self::$fields))
+        
+        if (array_key_exists('test', self::$fields) && 4 == count (self::$fields))
         {
-            $configs = array (array ('ssl://', 465),
-                              array ('tls://', 587),
-                              array ('', 587),
-                              array ('', 588),
-                              array ('tls://', 25),
-                              array ('', 25));
+            $configs = array (
+                array ('ssl://', 465),
+                array ('tls://', 587),
+                array ('', 587),
+                array ('', 588),
+                array ('tls://', 25),
+                array ('', 25),
+                array ('', 80),
+            );
 
             $host = Mage::getStoreConfig(MJ_Customsmtp_Helper_Config::XML_PATH_SMTP_HOST);
             $connected = FALSE;

@@ -23,6 +23,13 @@ class MJ_Customsmtp_Model_Email_Template extends Mage_Core_Model_Email_Template 
 
     public function sendMail(MJ_Customsmtp_Model_Mail $Mail, $config = NULL) {
 
+    	$data = $Mail->getData();
+    	
+    	$templateId = array_key_exists('template_id', $data) 
+            ? $data['template_id']
+            : 'no-template-found'
+        ;
+
         if (is_null ($config))
         {
             $config = array('username' => Mage::getStoreConfig(MJ_Customsmtp_Helper_Config::XML_PATH_SMTP_LOGIN),
@@ -47,7 +54,8 @@ class MJ_Customsmtp_Model_Email_Template extends Mage_Core_Model_Email_Template 
 
         $mail = $this->getMail();
 
-        $mail->addHeader ('X-Mailer', 'Mailjet-for-Magento/1.0', TRUE);
+        $mail->addHeader ('X-Mailer', 'Mailjet-for-Magento/3.0', TRUE);
+        $mail->addHeader ('X-Mailjet-Campaign', $templateId . '_' .date("Y") . '_' . date("W"), TRUE);
 
         $mail->setSubject('=?utf-8?B?' . base64_encode($Mail->getSubject()) . '?=');
 
@@ -58,7 +66,14 @@ class MJ_Customsmtp_Model_Email_Template extends Mage_Core_Model_Email_Template 
         }
 
         else {
-            $mail->addTo($Mail->getToEmail(), '=?utf-8?B?' . base64_encode($Mail->getToName()) . '?=');
+        	
+        	$toName = $Mail->getToName();
+			
+			if (is_array($toName)) {
+				$toName = $toName[0];
+			}
+			
+            $mail->addTo($Mail->getToEmail(), '=?utf-8?B?' . base64_encode($toName) . '?=');
         }
 
         $mail->setFrom($Mail->getFromEmail(), $Mail->getFromName());
