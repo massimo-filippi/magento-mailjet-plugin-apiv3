@@ -87,6 +87,7 @@
             <core>
                 <rewrite>
                     <email_template>MJ_Customsmtp_Model_Email_Template</email_template>
+                    <email_queue>MJ_Customsmtp_Model_Email_Queue</email_queue>
                 </rewrite>
             </core>
         </models>

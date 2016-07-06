@@ -19,8 +19,8 @@ This Plug-in replaces your default Magento SMTP by Mailjet's SMTP relay for adva
 
 Please note that the plugin is compatible with v1 and v3 MailJet users. 
 
-1) Unzip plugin/Mailjet-Magento.zip.
-2) Upload all its content in your Magento's root directory.
+1) Unzip plugin/MJ_Customsmtp-1.0.0.tgz or Upload it using Magento Connect Manager (System > Magento Connect > Magento Connect Manager). If you prefer the second option you should avoid the step 2 of this instructions
+2) Upload all its content in your Magento's root directory (If you not using Magento Connect Manager).
 3) Log in as administrator in Mangento.
 4) Flush Magento cache.
 5) Log out.

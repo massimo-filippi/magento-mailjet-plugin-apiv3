@@ -3,37 +3,36 @@
 /**
  * Mailjet
  */
-class MJ_Customsmtp_Model_Email_Template extends Mage_Core_Model_Email_Template {
+class MJ_Customsmtp_Model_Email_Template extends Mage_Core_Model_Email_Template
+{
 
     private $_saveRange = array();
 
-    protected function _saveMail($email, $name=null, array $variables = array()) {
+    protected function _saveMail($email, $name = null, array $variables = array())
+    {
         Mage::getModel('customsmtp/mail')
-        ->setSubject()
-        ->setIsPlain()
-        ->setBody()
-        ->setFromEmail()
-        ->setFromName()
-        ->setToEmail()
-        ->setToName()
-        ->save();
+            ->setSubject()
+            ->setIsPlain()
+            ->setBody()
+            ->setFromEmail()
+            ->setFromName()
+            ->setToEmail()
+            ->setToName()
+            ->save();
 
         return $this;
     }
 
-    public function sendMail(MJ_Customsmtp_Model_Mail $Mail, $config = NULL) {
+    public function sendMail(MJ_Customsmtp_Model_Mail $Mail, $config = NULL)
+    {
 
-    	$data = $Mail->getData();
-    	
-    	$templateId = array_key_exists('template_id', $data) 
-            ? $data['template_id']
-            : 'no-template-found'
-        ;
+        $data = $Mail->getData();
 
-        if (is_null ($config))
-        {
+        $templateId = array_key_exists('template_id', $data) ? $data['template_id'] : 'no-template-found';
+
+        if (is_null($config)) {
             $config = array('username' => Mage::getStoreConfig(MJ_Customsmtp_Helper_Config::XML_PATH_SMTP_LOGIN),
-                            'password' => Mage::getStoreConfig(MJ_Customsmtp_Helper_Config::XML_PATH_SMTP_PASSWORD));
+                'password' => Mage::getStoreConfig(MJ_Customsmtp_Helper_Config::XML_PATH_SMTP_PASSWORD));
         }
 
         $config ['smtp'] = Mage::getStoreConfig(MJ_Customsmtp_Helper_Config::XML_PATH_SMTP_HOST);
@@ -42,37 +41,34 @@ class MJ_Customsmtp_Model_Email_Template extends Mage_Core_Model_Email_Template 
 
         $ssl = Mage::getStoreConfig(MJ_Customsmtp_Helper_Config::XML_PATH_SMTP_SSL);
 
-        if (! empty ($ssl))
-        {
+        if (!empty($ssl)) {
             $config ['ssl'] = $ssl;
         }
 
-        $transport = new Zend_Mail_Transport_Smtp ($config ['smtp'], $config);
+        $transport = new Zend_Mail_Transport_Smtp($config ['smtp'], $config);
 
         ini_set('SMTP', Mage::getStoreConfig('system/smtp/host'));
         ini_set('smtp_port', Mage::getStoreConfig('system/smtp/port'));
 
         $mail = $this->getMail();
 
-        $mail->addHeader ('X-Mailer', 'Mailjet-for-Magento/3.0', TRUE);
-        $mail->addHeader ('X-Mailjet-Campaign', $templateId . '_' .date("Y") . '_' . date("W"), TRUE);
+        $mail->addHeader('X-Mailer', 'Mailjet-for-Magento/3.0', TRUE);
+        $mail->addHeader('X-Mailjet-Campaign', $templateId . '_' . date("Y") . '_' . date("W"), TRUE);
 
         $mail->setSubject('=?utf-8?B?' . base64_encode($Mail->getSubject()) . '?=');
 
-        if(!empty($this->_saveRange)) {
-            foreach($this->_saveRange as $range) {
+        if (!empty($this->_saveRange)) {
+            foreach ($this->_saveRange as $range) {
                 $mail->addTo($range['email'], '=?utf-8?B?' . base64_encode($range['name']) . '?=');
             }
-        }
+        } else {
 
-        else {
-        	
-        	$toName = $Mail->getToName();
-			
-			if (is_array($toName)) {
-				$toName = $toName[0];
-			}
-			
+            $toName = $Mail->getToName();
+
+            if (is_array($toName)) {
+                $toName = $toName[0];
+            }
+
             $mail->addTo($Mail->getToEmail(), '=?utf-8?B?' . base64_encode($toName) . '?=');
         }
 
@@ -97,7 +93,8 @@ class MJ_Customsmtp_Model_Email_Template extends Mage_Core_Model_Email_Template 
         return true;
     }
 
-    public function send($email, $name=null, array $variables = array()) {
+    public function send($email, $name = null, array $variables = array())
+    {
 
         if (!Mage::getStoreConfig(MJ_Customsmtp_Helper_Config::XML_PATH_ENABLED)) {
             return parent::send($email, $name, $variables);
@@ -120,42 +117,41 @@ class MJ_Customsmtp_Model_Email_Template extends Mage_Core_Model_Email_Template 
         $Mail->setIsPlain($this->isPlain());
         $Mail->setSubject($this->getProcessedTemplateSubject($variables));
 
-
         $Mail
-        ->setFromName($this->getSenderName())
-        ->setFromEmail($this->getSenderEmail())
-        ->setReplyTo($this->getReplyTo())
-        ->setToName($name)
-        ->setToEmail($email)
-        ->setTemplateId($this->getTemplateId())
-        ->setStoreId(Mage::app()->getStore()->getId());
+            ->setFromName($this->getSenderName())
+            ->setFromEmail($this->getSenderEmail())
+            ->setReplyTo($this->getReplyTo())
+            ->setToName($name)
+            ->setToEmail($email)
+            ->setTemplateId($this->getTemplateId())
+            ->setStoreId(Mage::app()->getStore()->getId());
 
         $this->sendMail($Mail);
 
         return true;
     }
 
-    private function _getToData($email,$name) {
+    private function _getToData($email, $name)
+    {
 
         $range = array();
 
-        if(!is_array($name)) {
+        if (!is_array($name)) {
             $name = (array) $name;
         }
 
-        for($i=(count($email)-1);$i>=0;$i--) {
+        for ($i = (count($email) - 1); $i >= 0; $i--) {
 
             if (!isset($name[$i])) {
                 $name[$i] = substr($email[$i], 0, strpos($email[$i], '@'));
             }
 
-            if(isset($name[$i]) && !is_array($name[$i]) && empty($name[$i])) {
+            if (isset($name[$i]) && !is_array($name[$i]) && empty($name[$i])) {
                 $name[$i] = substr($email[$i], 0, strpos($email[$i], '@'));
             }
 
             $range[$i]['email'] = $email[$i];
             $range[$i]['name'] = $name[$i];
-
         }
 
         return $range;
